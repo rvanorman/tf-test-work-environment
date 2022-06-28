@@ -12,4 +12,4 @@ It creates the following:
  * Required Security Groups Rules for Interaction with the Jump Box
  * A KMS key for auto unseal of Vault
  * A Secret associated to your Vault Enterprise License Key
- * An S3 bucket for storage and public access
+ * An S3 bucket for storage and access via jumpbox
