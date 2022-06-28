@@ -9,6 +9,9 @@ variable "vault_license_file_path" {
 variable "kms_alias" {
   description = "The alias desired to be used for the KMS key (auto unseal)"
 }
+variable "bucket_name" {
+  description = "Name of the s3 bucket"
+}
 
 variable "engineer" {
   description = "The name/initials of the engineer deploying"

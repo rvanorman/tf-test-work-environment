@@ -18,6 +18,10 @@ output "license-key-secret-arn" {
   value       = module.root.license-key-secret-arn
 }
 
+output "s3-bucket" {
+  value = module.root.created-s3-bucket
+}
+
 output created_VPC {
   description = "VPC: "
   value = module.root.created_VPC

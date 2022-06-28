@@ -19,6 +19,7 @@ module "root" {
   vault_license_secret_name = var.vault_license_secret_name
   vault_license_file_path   = var.vault_license_file_path
   kms_alias                 = var.kms_alias
+  bucket_name               = var.bucket_name
   engineer                  = var.engineer
   vpc_cidr                  = var.vpc_cidr
   resource_prefix           = var.resource_prefix
@@ -50,6 +51,9 @@ variable "vault_license_file_path" {
 }
 
 variable "kms_alias" {
+}
+
+variable "bucket_name" {
 }
 
 variable "engineer" {

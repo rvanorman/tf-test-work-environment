@@ -1,4 +1,4 @@
-# Create a secret in AWS associated to your vault enterprise license file
+# Create a secret in AWS associated to your vault enterprise license file. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret
 data "local_sensitive_file" "file" {
   filename = var.vault_license_file_path
 }
@@ -17,7 +17,7 @@ resource "aws_secretsmanager_secret_version" "secret" {
   secret_string = data.local_sensitive_file.file.content
 }
 
-# Create a KMS key for auto unseal of vault
+# Create a KMS key for auto unseal of vault. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key
 resource "aws_kms_key" "vault" {
   description = "Vault unseal key"
   #deletion_window_in_days = 10
@@ -33,6 +33,22 @@ resource "aws_kms_key" "vault" {
 resource "aws_kms_alias" "alias" {
   name          = "alias/${var.kms_alias}"
   target_key_id = aws_kms_key.vault.key_id
+}
+
+# Create an s3 bucket for storage and public read access. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
+resource "aws_s3_bucket" "bucket" {
+  bucket = var.bucket_name
+
+  tags = {
+    Owner       = var.engineer
+    Environment = "test"
+    Terraform   = "true"
+  }
+}
+
+resource "aws_s3_bucket_acl" "example" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = "private"
 }
 
 # Create the VPC. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
@@ -368,4 +384,74 @@ resource "aws_eip" "jump_box_public_ip" {
     Terraform     = "true"
     Environment   = "test"
   }
+}
+
+# Create the IAM Role and Policy necessary for the EC2 instance to access you s3 bucket created earlier
+resource "aws_iam_role" "tf_jumpbox_iam_role" {
+  name = "${var.resource_prefix}-tf-jumpbox-iam-role"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = {
+    Owner         = var.engineer
+    Terraform     = "true"
+    Environment   = "test"
+  }
+}
+
+resource "aws_iam_instance_profile" "tf_jumpbox_profile" {
+  name = "${var.resource_prefix}-tf-jumpbox-profile"
+  role = aws_iam_role.tf_jumpbox_iam_role.name
+}
+
+resource "aws_iam_role_policy" "tf_jumpbox_iam_policy" {
+  name = "${var.resource_prefix}-tf-jumpbox-iam-policy"
+  role = aws_iam_role.tf_jumpbox_iam_role.id
+  depends_on = [aws_s3_bucket.bucket]
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "s3:*"
+        ]
+        Effect   = "Allow"
+        Resource = [
+          "${aws_s3_bucket.bucket.arn}",
+          "${aws_s3_bucket.bucket.arn}/*"
+        ]
+      },
+      {
+        Action = [
+          "s3:ListAllMyBuckets"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:s3:::*"
+      }
+    ]
+  })
 }

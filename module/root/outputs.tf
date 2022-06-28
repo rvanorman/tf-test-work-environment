@@ -1,17 +1,21 @@
 output "key-id" {
-  value       = aws_kms_key.vault.id
+  value = aws_kms_key.vault.id
 }
 
 output "key-arn" {
-  value       = aws_kms_key.vault.arn
+  value = aws_kms_key.vault.arn
 }
 
 output "alias-arn" {
-  value       = aws_kms_alias.alias.arn
+  value = aws_kms_alias.alias.arn
 }
 
 output "license-key-secret-arn" {
-  value       = aws_secretsmanager_secret.secret.arn
+  value = aws_secretsmanager_secret.secret.arn
+}
+
+output "created-s3-bucket" {
+  value = aws_s3_bucket.bucket.id
 }
 
 output "created_VPC" {

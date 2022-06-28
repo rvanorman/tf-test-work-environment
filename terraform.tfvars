@@ -11,6 +11,8 @@ vault_license_secret_name = "vault-license-name"
 vault_license_file_path   = "../../relative/path/to/secret/file.txt"
 # The Alias (ie "Friendly Name") name of the KMS Key
 kms_alias                 = "test-kms-key"
+# Name of the s3 bucket
+bucket_name               = "your-name-here-bucket"
 # Name of the enginer deploying using this template
 engineer                  = "test"
 # Desired CIDR range for you VPC
@@ -41,5 +43,5 @@ private_subnet_c_cidr     = "10.0.5.0/24"
 jumpbox_instance_size     = "t3.micro"
 # Capacity of the storage for you jumpbox instance (in GB)
 jumpbox_instance_storage  = "30"
-# 
+# The desired CIDR range for allowing to access your jumpbox from the internet
 jumpbox_ssh_ingress_cidr  = "0.0.0.0/0"
