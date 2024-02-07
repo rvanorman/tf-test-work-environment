@@ -1,21 +1,24 @@
 # Create a secret in AWS associated to your vault enterprise license file. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret
-data "local_sensitive_file" "file" {
-  filename = var.vault_license_file_path
-}
+# The Below Commented out for non Enterprise Testing
+#data "local_sensitive_file" "file" {
+#  filename = var.vault_license_file_path
+#}
 
-resource "aws_secretsmanager_secret" "secret" {
-  name = var.vault_license_secret_name
-  tags = {
-    Owner       = var.engineer
-    Environment = "test"
-    Terraform   = "true"
-  }
-}
+# The Below Commented out for non Enterprise Testing
+#resource "aws_secretsmanager_secret" "secret" {
+#  name = var.vault_license_secret_name
+#  tags = {
+#    Owner       = var.engineer
+#    Environment = "test"
+#    Terraform   = "true"
+#  }
+#}
 
-resource "aws_secretsmanager_secret_version" "secret" {
-  secret_id     = aws_secretsmanager_secret.secret.id
-  secret_string = data.local_sensitive_file.file.content
-}
+# The Below Commented out for non Enterprise Testing
+#resource "aws_secretsmanager_secret_version" "secret" {
+#  secret_id     = aws_secretsmanager_secret.secret.id
+#  secret_string = data.local_sensitive_file.file.content
+#}
 
 # Create a KMS key for auto unseal of vault. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key
 resource "aws_kms_key" "vault" {
@@ -46,9 +49,17 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "example" {
+resource "aws_s3_bucket_ownership_controls" "bucket-acl-ownership" {
   bucket = aws_s3_bucket.bucket.id
-  acl    = "private"
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket-acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.bucket-acl-ownership]
+  bucket     = aws_s3_bucket.bucket.id
+  acl        = "private"
 }
 
 # Create the VPC. Used https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
@@ -118,6 +129,7 @@ resource "aws_subnet" "tf_private_subnet_a" {
     Terraform     = "true"
     Environment   = "test"
     Accessibility = "Private"
+    Vault         = "deploy"
   }
 }
 
@@ -132,6 +144,7 @@ resource "aws_subnet" "tf_private_subnet_b" {
     Terraform     = "true"
     Environment   = "test"
     Accessibility = "Private"
+    Vault         = "deploy"
   }
 }
 
@@ -146,6 +159,7 @@ resource "aws_subnet" "tf_private_subnet_c" {
     Terraform     = "true"
     Environment   = "test"
     Accessibility = "Private"
+    Vault         = "deploy"
   }
 }
 

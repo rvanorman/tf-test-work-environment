@@ -13,10 +13,11 @@ output "alias-arn" {
   value       = module.root.alias-arn
 }
 
-output "license-key-secret-arn" {
-  description = "Secret ARN: "
-  value       = module.root.license-key-secret-arn
-}
+# The Below Commented out for none Enterprise Testing
+#output "license-key-secret-arn" {
+#  description = "Secret ARN: "
+#  value       = module.root.license-key-secret-arn
+#}
 
 output "s3-bucket" {
   value = module.root.created-s3-bucket
@@ -63,4 +64,19 @@ output used_aws_ami_id {
 
 output jumpbox_public_ip {
   value = module.root.jumpbox_elastic_ip.public_ip
+}
+
+output "lb_certificate_arn" {
+  description = "ARN of ACM cert to use with Vault LB listener"
+  value       = module.secrets.lb_certificate_arn
+}
+
+output "leader_tls_servername" {
+  description = "Shared SAN that will be given to the Vault nodes configuration for use as leader_tls_servername"
+  value       = module.secrets.leader_tls_servername
+}
+
+output "secrets_manager_arn" {
+  description = "ARN of secrets_manager secret"
+  value       = module.secrets.secrets_manager_arn
 }

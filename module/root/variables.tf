@@ -1,10 +1,12 @@
-variable "vault_license_secret_name" {
-  description = "The name desired for the secret to be created"
-}
+# The Below Commented out for non Enterprise Testing
+#variable "vault_license_secret_name" {
+#  description = "The name desired for the secret to be created"
+#}
 
-variable "vault_license_file_path" {
-  description = "The path on your machine to the license file for vault enterprise"
-}
+# The Below Commented out for non Enterprise Testing
+#variable "vault_license_file_path" {
+#  description = "The path on your machine to the license file for vault enterprise"
+#}
 
 variable "kms_alias" {
   description = "The alias desired to be used for the KMS key (auto unseal)"

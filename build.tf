@@ -16,8 +16,9 @@ terraform {
 module "root" {
   source = "./module/root"
 
-  vault_license_secret_name = var.vault_license_secret_name
-  vault_license_file_path   = var.vault_license_file_path
+  # The Below Commented out for non Enterprise Testing
+  #vault_license_secret_name = var.vault_license_secret_name
+  #vault_license_file_path   = var.vault_license_file_path
   kms_alias                 = var.kms_alias
   bucket_name               = var.bucket_name
   engineer                  = var.engineer
@@ -38,17 +39,28 @@ module "root" {
   jumpbox_ssh_ingress_cidr  = var.jumpbox_ssh_ingress_cidr
 }
 
+module "secrets" {
+  source = "./module/secrets"
+
+  resource_prefix           = var.resource_prefix
+  tls_kms_key_id            = var.tls_kms_key_id
+  recovery_window           = var.recovery_window
+  shared_san                = var.shared_san
+}
+
 variable "aws_profile" {
 }
 
 variable "aws_region" {
 }
 
-variable "vault_license_secret_name" {
-}
+# The Below Commented out for non Enterprise Testing
+#variable "vault_license_secret_name" {
+#}
 
-variable "vault_license_file_path" {
-}
+# The Below Commented out for non Enterprise Testing
+#variable "vault_license_file_path" {
+#}
 
 variable "kms_alias" {
 }
@@ -102,4 +114,13 @@ variable "jumpbox_instance_storage" {
 }
 
 variable "jumpbox_ssh_ingress_cidr" {
+}
+
+variable "tls_kms_key_id" {
+}
+
+variable "recovery_window" {
+}
+
+variable "shared_san" {
 }
