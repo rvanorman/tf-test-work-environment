@@ -5,10 +5,10 @@
 aws_profile               = "default"
 # AWS Region to deploy into
 aws_region                = "us-east-2"
-# Name of the secret you wish to use for your vault license key
-vault_license_secret_name = "vault-license-name"
-# Path on your local machine where the vault license exists
-vault_license_file_path   = "../../relative/path/to/secret/file.txt"
+# Name of the secret you wish to use for your vault license key -- The Below Commented out for non Enterprise Testing (Fix here, build.tf, outputs.tf, variables.tf and main.tf if you wish to use an enterprise license)
+#vault_license_secret_name = "vault-license-name"
+# Path on your local machine where the vault license exists -- The Below Commented out for non Enterprise Testing (Fix here, build.tf, outputs.tf, variables.tf and main.tf if you wish to use an enterprise license)
+#vault_license_file_path   = "../../relative/path/to/secret/file.txt"
 # The Alias (ie "Friendly Name") name of the KMS Key
 kms_alias                 = "test-kms-key"
 # Name of the s3 bucket
@@ -45,3 +45,9 @@ jumpbox_instance_size     = "t3.micro"
 jumpbox_instance_storage  = "30"
 # The desired CIDR range for allowing to access your jumpbox from the internet
 jumpbox_ssh_ingress_cidr  = "0.0.0.0/0"
+# The ARN or ID of the AWS KMS customer master key (CMK) to be used to encrypt the secret values in the versions stored in this secret. If you don't specify this value, then Secrets Manager defaults to using the AWS account's default CMK (the one named aws/secretsmanager)
+tls_kms_key_id            =  null
+# The number of days that AWS Secrets Manager waits before it can delete the secret
+recovery_window           = 0
+# A shared server name that the certs for all Vault nodes contain. This is the same value you will supply as input to the Vault installation module for the leader_tls_servername variable
+shared_san                = "vault.server.com"

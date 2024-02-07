@@ -10,9 +10,10 @@ output "alias-arn" {
   value = aws_kms_alias.alias.arn
 }
 
-output "license-key-secret-arn" {
-  value = aws_secretsmanager_secret.secret.arn
-}
+# The Below Commented out for non Enterprise Testing
+#output "license-key-secret-arn" {
+#  value = aws_secretsmanager_secret.secret.arn
+#}
 
 output "created-s3-bucket" {
   value = aws_s3_bucket.bucket.id
